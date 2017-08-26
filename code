@@ -1,0 +1,56 @@
+from bs4 import BeautifulSoup
+import csv
+from bs4 import BeautifulSoup
+import urllib
+
+
+with urllib.request.urlopen("https://www.bloomberg.com/markets/stocks/world-indexes/europe-africa-middle-east") as url:
+    r = url.read()
+
+
+
+f = csv.writer(open("Stock Data.csv", "w"))
+f.writerow(["sep=,"])
+f.writerow(["Stock", "Abbreviation", "Value"])
+
+soup = BeautifulSoup(r)
+soup = BeautifulSoup(open("stocks.html"))
+
+stock_list = soup.findAll("tr", class_="data-table-row")
+
+
+
+for stock_item in stock_list:
+    try:
+        full_name_container = stock_item.findAll("div", {"data-type" : "full"})
+        full_name = str(full_name_container[0].text.strip())
+
+        abbreviation_container = stock_item.findAll("div", {"data-type" : "abbreviation"})
+        abbreviation = str(abbreviation_container[0].text.strip())
+
+        value_container = stock_item.findAll("td", {"data-type" : "value"})
+        value_amount = (value_container[0].text)
+    except:
+        print ("Bad value")
+        continue
+
+    print (full_name + ", " + abbreviation + ", " + value_amount)
+    f.writerow([full_name, abbreviation, value_amount])
+
+#data = soup.find_all("tr", class_="data-table-row")
+
+
+#print (data[0])
+
+#for element in stock_names_abbreviation:
+
+#    name = element.get_text()
+
+
+
+#    f.writerow([name, abbreviation, value])
+
+#for element in stock_names_abbreviation:
+    #name = element.get_text()
+    #print (name)
+    #f.writerow(name)
